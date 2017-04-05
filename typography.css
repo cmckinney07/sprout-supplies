@@ -1,0 +1,844 @@
+// VARIABLES 
+// Anything with a '!default' definition proceeding the value can be easily overriden by declaring a new value in your .scss file that imports 'pasta.scss'.
+
+$type-xxs: 12 !default;
+$type-xs: 14 !default;
+$type-s: 16 !default;
+$type-m: 18 !default;
+$type-ml: 20 !default;
+$type-l: 24 !default;
+$type-xl: 30 !default;
+$type-xxl: 36 !default;
+
+$type-bl-xs: 12 !default;
+$type-bl-s: 16 !default;
+$type-bl-m: 24 !default;
+$type-bl-l: 36 !default;
+$type-bl-xl: 48 !default;
+
+$type-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !default;
+$type-serif: "Georgia", "Times", "Times New Roman", serif !default;
+$type-mono: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", monospace !default;
+
+$color-tint: white !default;
+$color-shade: black !default;
+
+@function tint($color, $percent) {
+  @return mix($color-tint, $color, $percent);
+}
+@function shade($color, $percent) {
+  @return mix($color-shade, $color, $percent);
+}
+
+$color-highlight: #6CB542;
+$color-base: shade($color-highlight,75%);
+$color-highlight-alt: #0773CD;
+
+
+$color-highlight-75: tint($color-highlight,25%);
+$color-highlight-62: tint($color-highlight,38%);
+$color-highlight-50: tint($color-highlight,50%);
+$color-highlight-38: tint($color-highlight,62%);
+$color-highlight-25: tint($color-highlight,75%);
+$color-highlight-12: tint($color-highlight,88%);
+$color-highlight-5:  tint($color-highlight,95%);
+$color-highlight-dark: shade($color-highlight,25%);
+
+$color-base-75: tint($color-base,25%);
+$color-base-62: tint($color-base,38%);
+$color-base-50: tint($color-base,50%);
+$color-base-38: tint($color-base,62%);
+$color-base-25: tint($color-base,75%);
+$color-base-12: tint($color-base,88%);
+$color-base-5:  tint($color-base,95%);
+$color-base-dark: shade($color-base,25%);
+
+
+
+$color-highlight-alt-75: tint($color-highlight-alt,25%);
+$color-highlight-alt-62: tint($color-highlight-alt,38%);
+$color-highlight-alt-50: tint($color-highlight-alt,50%);
+$color-highlight-alt-38: tint($color-highlight-alt,62%);
+$color-highlight-alt-25: tint($color-highlight-alt,75%);
+$color-highlight-alt-12: tint($color-highlight-alt,88%);
+$color-highlight-alt-5:  tint($color-highlight-alt,95%);
+$color-highlight-alt-dark: shade($color-highlight-alt,25%);
+
+
+@function rem($size) {
+  $size-rem: $size/16;
+  @return #{$size-rem}rem;
+}
+
+$space-xxs: rem(4) !default;
+$space-xs: rem(8) !default;
+$space-s: rem(16) !default;
+$space-m: rem(24) !default;
+$space-l: rem(32) !default;
+$space-xl: rem(64) !default;
+$space-xxl: rem(96) !default;
+
+$grid-1-6: percentage(1/6);
+$grid-1-4: percentage(1/4);
+$grid-1-3: percentage(1/3);
+$grid-1-2: percentage(1/2);
+$grid-2-3: percentage(2/3);
+$grid-3-4: percentage(3/4);
+
+$border-s: rem(1) solid !default;
+$border-m: $space-xxs solid !default;
+$border-l: $space-xs solid !default;
+
+// MIXINS
+
+// All breakpoints are modeled after common screens resolutions subtracting an additional 16 pixels so they affect the object slightly before they reach the common size (for example 768-16 = 752).
+
+@mixin bp($point) {
+	@if $point == xs { @media (min-width: rem(16)) and (max-width: rem(736)) { @content; } }
+	@else if $point == xsl { @media (min-width: rem(464)) { @content; } }
+	@else if $point == s { @media (min-width: rem(752)) { @content; } }
+	@else if $point == m { @media (min-width: rem(1008)) { @content; } }
+	@else if $point == l { @media (min-width: rem(1264)) { @content; } }
+	@else if $point == ml { @media (min-width: rem(1424)) { @content; } }
+	@else if $point == xl { @media (min-width: rem(1584)) { @content; } }
+	@else if $point == xxl { @media (min-width: rem(1616)) { @content; } }
+}
+
+// This mixin takes the argument of a unitless pixel value combined with common baseline sizes defined in 'Variables' to make a line of text the full value of the baseline unit (for example 24 = baseline unit / 16 = pixel value = 1.5 lineheight or 24 pixels tall).
+
+@mixin type($px,$lh: $type-bl-m) {
+  font-size: rem($px);
+  line-height: ($lh)/($px);
+}
+
+// All type mixins provide built-in responsive sizing using the values defined in 'Variables' — the idea is that a user can have type scale up or down depending on device sizes, making reading more enjoyable.
+
+@mixin type-xs {
+	@include type($type-xs,$type-bl-s);
+	@include bp(xs) { @include type($type-xxs,$type-bl-s); }
+	@include bp(xl) { @include type($type-s); }
+}
+@mixin type-s {
+	@include type($type-s);
+	@include bp(xs) { @include type($type-xs,$type-bl-s); }
+	@include bp(xl) { @include type($type-m); }
+}
+@mixin type-m	 {
+  @include type($type-m, $type-bl-l);
+  @include bp(xs) { @include type($type-s); }
+  @include bp(xl) { @include type($type-ml,$type-bl-l); }
+}
+@mixin type-ml	 {
+  @include type($type-ml);
+  @include bp(xs) { @include type($type-m); }
+  @include bp(xl) { @include type($type-l,$type-bl-l); }
+}
+@mixin type-l {
+	@include type($type-l,$type-bl-l);
+	@include bp(xs) { @include type($type-ml,$type-bl-l); }
+	@include bp(xl) { @include type($type-xl,$type-bl-l); }
+}
+@mixin type-xl {
+	@include type($type-xl,$type-bl-l);
+	@include bp(xs) { @include type($type-l,$type-bl-l); }
+	@include bp(xl) { @include type($type-xxl,$type-bl-xl); }
+}
+
+// A slew of helper mixins also scoped to individual classes for non-SASS in the '_eggs-base.scss' file.
+
+@mixin type-sans { font-family: $type-sans; }
+
+@mixin type-serif { font-family: $type-serif; }
+
+@mixin type-mono { font-family: $type-mono; }
+
+@mixin type-bold { font-weight: bold; }
+
+@mixin type-italic { font-style: italic; }
+
+@mixin type-caps { text-transform: uppercase; }
+
+@mixin type-left { text-align: left; }
+
+@mixin type-center {
+  text-align: center;
+  img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@mixin type-right { text-align: right; }
+
+@mixin type-legible {
+  @include bp(m) {
+    max-width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @include bp(xl) { max-width: 62.5%; }
+}
+
+// Timing functions help things feel 'good'.
+
+@mixin smooth      { transition: all 0.375s ease-in; }
+@mixin smooth-pop  { transition: all 0.5s cubic-bezier(0.5, 0.1, 0, 1.2); }
+
+
+// Padding helpers.
+
+@mixin padding($size, $side: all) {
+	@if $size == xs and $side == all {
+  	  padding: $space-xs;
+  	  @include bp(xl) { padding: $space-s; }
+  }
+  @else if $size == s and $side == all {
+  	  padding: $space-s;
+  	  @include bp(xl) { padding: $space-m; }
+  }
+  @else if $size == m and $side == all {
+  	  padding: $space-m;
+  	  @include bp(xl) { padding: $space-l; }
+  }
+  @else if $size == l and $side == all {
+  	  padding: $space-l;
+  	  @include bp(xl) { padding: $space-xl; }
+  }
+  @else if $size == xl and $side == all {
+  	  padding: $space-xl;
+  	  @include bp(xl) { padding: $space-xxl; }
+  }
+	@else if $size == xs and $side == t {
+  	  padding-top: $space-xs;
+  	  @include bp(xl) { padding-top: $space-s; }
+  }
+  @else if $size == s and $side == t {
+  	  padding-top: $space-s;
+  	  @include bp(xl) { padding-top: $space-m; }
+  }
+  @else if $size == m and $side == t {
+  	  padding-top: $space-m;
+  	  @include bp(xl) { padding-top: $space-l; }
+  }
+  @else if $size == l and $side == t {
+  	  padding-top: $space-l;
+  	  @include bp(xl) { padding-top: $space-xl; }
+  }
+  @else if $size == xl and $side == t {
+  	  padding-top: $space-xl;
+  	  @include bp(xl) { padding-top: $space-xxl; }
+  }
+  @else if $size == xs and $side == b {
+  	  padding-bottom: $space-xs;
+  	  @include bp(xl) { padding-bottom: $space-s; }
+  }
+  @else if $size == s and $side == b {
+  	  padding-bottom: $space-s;
+  	  @include bp(xl) { padding-bottom: $space-m; }
+  }
+  @else if $size == m and $side == b {
+  	  padding-bottom: $space-m;
+  	  @include bp(xl) { padding-bottom: $space-l; }
+  }
+  @else if $size == l and $side == b {
+  	  padding-bottom: $space-l;
+  	  @include bp(xl) { padding-bottom: $space-xl; }
+  }
+  @else if $size == xl and $side == b {
+  	  padding-bottom: $space-xl;
+  	  @include bp(xl) { padding-bottom: $space-xxl; }
+  }
+  @else if $size == xs and $side == l {
+  	  padding-left: $space-xs;
+  	  @include bp(xl) { padding-left: $space-s; }
+  }
+  @else if $size == s and $side == l {
+  	  padding-left: $space-s;
+  	  @include bp(xl) { padding-left: $space-m; }
+  }
+  @else if $size == m and $side == l {
+  	  padding-left: $space-m;
+  	  @include bp(xl) { padding-left: $space-l; }
+  }
+  @else if $size == l and $side == l {
+  	  padding-left: $space-l;
+  	  @include bp(xl) { padding-left: $space-xl; }
+  }
+  @else if $size == xl and $side == l {
+  	  padding-left: $space-xl;
+  	  @include bp(xl) { padding-left: $space-xxl; }
+  }
+  @else if $size == xs and $side == r {
+  	  padding-right: $space-xs;
+  	  @include bp(xl) { padding-right: $space-s; }
+  }
+  @else if $size == s and $side == r {
+  	  padding-right: $space-s;
+  	  @include bp(xl) { padding-right: $space-m; }
+  }
+  @else if $size == m and $side == r {
+  	  padding-right: $space-m;
+  	  @include bp(xl) { padding-right: $space-l; }
+  }
+  @else if $size == l and $side == r {
+  	  padding-right: $space-l;
+  	  @include bp(xl) { padding-right: $space-xl; }
+  }
+  @else if $size == xl and $side == r {
+  	  padding-right: $space-xl;
+  	  @include bp(xl) { padding-right: $space-xxl; }
+  }
+}
+
+// Margin helpers.
+
+@mixin margin($size, $side: t) {
+	@if $size == xs and $side == t {
+  	  margin-top: $space-xs;
+  	  @include bp(xl) { margin-top: $space-s; }
+  }
+  @else if $size == s and $side == t {
+  	  margin-top: $space-s;
+  	  @include bp(xl) { margin-top: $space-m; }
+  }
+  @else if $size == m and $side == t {
+  	  margin-top: $space-m;
+  	  @include bp(xl) { margin-top: $space-l; }
+  }
+  @else if $size == l and $side == t {
+  	  margin-top: $space-l;
+  	  @include bp(xl) { margin-top: $space-xl; }
+  }
+  @else if $size == xl and $side == t {
+  	  margin-top: $space-xl;
+  	  @include bp(xl) { margin-top: $space-xxl; }
+  }
+  @else if $size == xs and $side == b {
+  	  margin-bottom: $space-xs;
+  	  @include bp(xl) { margin-bottom: $space-s; }
+  }
+  @else if $size == s and $side == b {
+  	  margin-bottom: $space-s;
+  	  @include bp(xl) { margin-bottom: $space-m; }
+  }
+  @else if $size == m and $side == b {
+  	  margin-bottom: $space-m;
+  	  @include bp(xl) { margin-bottom: $space-l; }
+  }
+  @else if $size == l and $side == b {
+  	  margin-bottom: $space-l;
+  	  @include bp(xl) { margin-bottom: $space-xl; }
+  }
+  @else if $size == xl and $side == b {
+  	  margin-bottom: $space-xl;
+  	  @include bp(xl) { margin-bottom: $space-xxl; }
+  }
+  @else if $size == xs and $side == l {
+  	  margin-left: $space-xs;
+  	  @include bp(xl) { margin-left: $space-s; }
+  }
+  @else if $size == s and $side == l {
+  	  margin-left: $space-s;
+  	  @include bp(xl) { margin-left: $space-m; }
+  }
+  @else if $size == m and $side == l {
+  	  margin-left: $space-m;
+  	  @include bp(xl) { margin-left: $space-l; }
+  }
+  @else if $size == l and $side == l {
+  	  margin-left: $space-l;
+  	  @include bp(xl) { margin-left: $space-xl; }
+  }
+  @else if $size == xl and $side == l {
+  	  margin-left: $space-xl;
+  	  @include bp(xl) { margin-left: $space-xxl; }
+  }
+  @else if $size == xs and $side == r {
+  	  margin-right: $space-xs;
+  	  @include bp(xl) { margin-right: $space-s; }
+  }
+  @else if $size == s and $side == r {
+  	  margin-right: $space-s;
+  	  @include bp(xl) { margin-right: $space-m; }
+  }
+  @else if $size == m and $side == r {
+  	  margin-right: $space-m;
+  	  @include bp(xl) { margin-right: $space-l; }
+  }
+  @else if $size == l and $side == r {
+  	  margin-right: $space-l;
+  	  @include bp(xl) { margin-right: $space-xl; }
+  }
+  @else if $size == xl and $side == r {
+  	  margin-right: $space-xl;
+  	  @include bp(xl) { margin-right: $space-xxl; }
+  }
+}
+
+// Positioning helpers.
+
+@mixin fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin center-vertical {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+}
+
+@mixin inline {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Global Reset
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html {
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  vertical-align: baseline;
+}
+
+img {
+  -ms-interpolation-mode: bicubic;
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, audio, canvas, video, pre {
+  display: block;
+}
+
+canvas {
+  -ms-touch-action: double-tap-zoom;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  border: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+// Forms
+
+input[type="email"], input[type="number"], input[type="password"],
+input[type="search"], input[type="tel"], input[type="text"], input[type="url"],
+input[type="color"], input[type="date"], input[type="datetime"], input[type="datetime-local"],
+input[type="month"], input[type="time"], input[type="week"], select, textarea {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
+  font-family: inherit;
+  display: block;
+  border: inherit;
+  &:focus { outline: 0; }
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+
+label, input, button, select, textarea {
+  font-weight: inherit;
+  color: inherit;
+  width: 100%;
+  max-width: 100%;
+  border: inherit;
+  outline: 0;
+}
+
+label {
+  display: block;
+  width: auto;
+}
+
+select {
+  outline: 0;
+  background: transparent;
+  width: 100%;
+}
+
+input[type="file"], input[type="image"], input[type="submit"],
+button[type="submit"], input[type="reset"], input[type="button"],
+input[type="radio"], input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  display: inline-block;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin-right: inherit;
+}
+
+input[disabled], select[disabled], textarea[disabled], input[readonly], select[readonly], textarea[readonly] {
+  cursor: not-allowed;
+}
+
+input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="radio"][readonly], input[type="checkbox"][readonly] {
+  background-color: transparent;
+}
+
+button, html input[type="button"], input[type="reset"], input[type="submit"], button[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+  background: none;
+  width: auto;
+}
+
+button[disabled], input[disabled] {
+  cursor: default;
+}
+
+input[type="search"] {
+  -webkit-appearance: textfield;
+}
+
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+button::-moz-focus-inner, input::-moz-focus-inner, select::-moz-focus-inner, a::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+// Typography
+
+html {
+  @include type-sans;
+  font-size: 100%;
+  color: $color-base;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga", "clig";
+}
+
+h1 {font-family: "Quicksand",sans-serif;
+    font-weight: 700;
+    color: white;
+    background-color: #043a67;
+    @include type-xl; }
+
+h2 { @include type-l; 
+    font-family: "Quicksand",sans-serif;
+    font-weight: 700;
+    color: #043a67;
+ }
+
+h3 { @include type-ml;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    text-transform: capitalize;
+    color: #999999;
+}
+
+p, li { @include type-m;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    color: #222222;}
+
+p { @include type-serif;
+font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    color: #222222;}
+
+h4 { @include type-s; 
+font-family: 'Open Sans', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #c6cbc4;}
+
+h5 { @include type-xs; 
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #c6cbc4;}
+
+b, strong { @include type-bold; }
+
+i, em { @include type-italic; }
+
+hr {
+  display: block;
+  border-top: $border-s $color-highlight-25;
+}
+
+abbr {
+  font-variant-caps: all-small-caps;
+  font-feature-settings: "c2sc", "smcp";
+}
+
+code {
+  @include type-mono;
+  @include padding(xs, l);
+  @include padding(xs, r);
+  background-color: $color-tint;
+  border: $border-s $color-base-12;
+  border-radius: $space-xxs;
+  color: $color-base-75;
+  white-space: pre-wrap;
+}
+
+pre {
+  @include type-m;
+  @include padding(s);
+  background-color: $color-tint;
+  border: $border-s $color-base-12;
+  border-radius: $space-xs;
+  overflow: hidden;
+  overflow-x: auto;
+  word-wrap: normal;
+  code {
+    border: none;
+    padding: 0;
+    white-space: pre;
+  }
+}
+
+.type__style--sans { @include type-sans; }
+
+.type__style--serif { @include type-serif; }
+
+.type__style--mono { @include type-mono; }
+
+.type__style--caps { @include type-caps; }
+
+.type__align--left { @include type-left; }
+
+.type__align--center { @include type-center; }
+
+.type__align--right { @include type-right; }
+
+.type__align--legible { @include type-legible; }
+
+.type__align--inline {
+  @include inline;
+  + .type__align--inline { @include margin(s,l); }
+}
+
+// List Items
+
+ol, ul {
+  @include padding(m,l);
+  list-style-position: outside;
+  @include bp(m) { padding-left: 0; }
+}
+
+ol li { list-style-type: decimal; }
+
+ul li { list-style-type: disc; }
+
+// Links 
+
+a { @include smooth; }
+
+p a:not(.btn) {
+  color: $color-highlight;
+  
+  border-bottom: $border-s $color-highlight-50;
+  &:hover { color: $color-highlight-75;
+ }
+}
+
+.btn {
+  font-family: 'Open Sans', sans-serif;
+  font-width: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+// Colors
+
+.color__bg--base      { background-color: $color-base; }
+.color__bg--base-75   { background-color: $color-base-75; }
+.color__bg--base-62   { background-color: $color-base-62; }
+.color__bg--base-50   { background-color: $color-base-50; }
+.color__bg--base-38   { background-color: $color-base-38; }
+.color__bg--base-25   { background-color: $color-base-25; }
+.color__bg--base-12   { background-color: $color-base-12; }
+.color__bg--base-5    { background-color: $color-base-5; }
+.color__bg--base-dark { background-color: $color-base-dark; }
+
+.color__bg--highlight      { background-color: $color-highlight; }
+.color__bg--highlight-75   { background-color: $color-highlight-75; }
+.color__bg--highlight-62   { background-color: $color-highlight-62; }
+.color__bg--highlight-50   { background-color: $color-highlight-50; }
+.color__bg--highlight-38   { background-color: $color-highlight-38; }
+.color__bg--highlight-25   { background-color: $color-highlight-25; }
+.color__bg--highlight-12   { background-color: $color-highlight-12; }
+.color__bg--highlight-5    { background-color: $color-highlight-5; }
+.color__bg--highlight-dark { background-color: $color-highlight-dark; }
+
+.color__bg--white { background-color: $color-tint; }
+
+.color__type--base      { color: $color-base; }
+.color__type--base-75   { color: $color-base-75; }
+.color__type--base-62   { color: $color-base-62; }
+.color__type--base-50   { color: $color-base-50; }
+.color__type--base-38   { color: $color-base-38; }
+.color__type--base-25   { color: $color-base-25; }
+.color__type--base-12   { color: $color-base-12; }
+.color__type--base-5    { color: $color-base-5; }
+.color__type--base-dark { color: $color-base-dark; }
+
+.color__type--highlight      { color: $color-highlight; }
+.color__type--highlight-75   { color: $color-highlight-75; }
+.color__type--highlight-62   { color: $color-highlight-62; }
+.color__type--highlight-50   { color: $color-highlight-50; }
+.color__type--highlight-38   { color: $color-highlight-38; }
+.color__type--highlight-25   { color: $color-highlight-25; }
+.color__type--highlight-12   { color: $color-highlight-12; }
+.color__type--highlight-5    { color: $color-highlight-5; }
+.color__type--highlight-dark { color: $color-highlight-dark; }
+
+.color__type--white { color: $color-tint; }
+
+// Page Structure
+
+.video__holder {
+	position:relative;
+  height: 0;
+  padding-bottom: 56.25%;
+  iframe, object { @include fill; }
+}
+
+.btn {
+  @include padding(xs);
+  @include inline;
+  @include type-bold;
+  @include type-s;
+  @include type-sans;
+  background-color: $color-highlight;
+  border: $border-s $color-highlight;
+  border-radius: $space-xs;
+  color: $color-tint;
+  &:hover { background-color: $color-highlight-dark; }
+  + .btn { @include margin(s,l); }
+  &.btn--secondary {
+    background-color: $color-tint;
+    border-color: $color-highlight-25;
+    color: $color-highlight;
+    &:hover {
+      background-color: $color-tint;
+      border-color: $color-highlight;
+    }
+  }
+}
+
+blockquote {
+  @include padding(s);
+  background-color: $color-highlight-5;
+  border: $border-s $color-highlight-12;
+  border-radius: $space-xs;
+  color: $color-base-75;
+}
+
+// Stuff you can ignore
+
+.wrapper {
+  @include padding(m);
+  max-width: rem(800);
+	margin: 0 auto;
+	@include bp(ml) {
+  	  @include padding(l);
+  	  max-width: rem(960);
+  }
+	@include bp(xl) {
+  	  max-width: rem(1280);
+  }
+  blockquote p { @include type-sans; }
+  hr {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: $space-xl;
+    + h3 {
+      @include type-legible;
+      @include type-center;
+      @include margin(xs);
+      color: $color-highlight;
+      + hr { @include margin(xs); }
+    }
+  }  
+  h4:not(h3 + p + h4) {
+    @include type-caps;
+    @include type-center;
+    @include margin(l);
+    color: $color-base-62;
+  }  
+  * + {
+    p, ul, pre, blockquote, figure { @include margin(m); }
+  }
+  hr + h4 + ul, ul + h4 + ul {
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-left: -$space-s;
+    margin-right: -$space-s;
+    span { display: block; }
+    li {
+      @include type-center;
+      @include padding(xs);
+      margin-top: 0;
+      list-style: none;
+      flex-basis: 100%;
+      @include bp(xsl) { flex-basis: $grid-1-2; }
+      @include bp(m) { flex-basis: $grid-1-3; }
+      @include bp(xl) { flex-basis: $grid-1-4; }
+    }
+    span {
+      margin: 0 auto;
+      height: $space-xl;
+      width: $space-xl;
+      border-radius: 50%;
+    }
+    code {
+      @include margin(xs);
+      display: inline-block;
+      line-height: 1.5;
+    }
+  }
+}
